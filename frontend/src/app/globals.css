@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ─────────────────────────────── */
+:root {
+  --clay: #8B261E;
+  --clay-dark: #6B1B14;
+  --clay-light: #B03028;
+  --ochre: #E5A93C;
+  --ochre-dark: #C48A1E;
+  --charcoal: #121212;
+  --charcoal-mid: #1E1E1E;
+  --charcoal-light: #2A2A2A;
+  --cream: #FAF9F6;
+  --cream-dark: #EDE8DF;
+}
+
+/* System‑preference dark/light mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--charcoal);
+    --bg-mid: var(--charcoal-mid);
+    --bg-card: var(--charcoal-light);
+    --text-primary: var(--cream);
+    --text-secondary: #A1A1A1;
+    --border: rgba(255,255,255,0.08);
+  }
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #F8F4EE;
+    --bg-mid: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #555555;
+    --border: rgba(0,0,0,0.10);
+  }
+}
+
+/* ─── Base ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ─── Utilities ─────────────────────────────────────────── */
+@layer utilities {
+  .glass {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .glass-light {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  @media (prefers-color-scheme: light) {
+    .glass { @apply glass-light; }
+  }
+
+  .text-gradient-clay {
+    background: linear-gradient(135deg, #E5A93C 0%, #8B261E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-ochre {
+    background: linear-gradient(135deg, #F0C060 0%, #E5A93C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .btn-primary {
+    @apply bg-clay hover:bg-clay-dark text-cream font-semibold px-6 py-3 rounded-xl
+           transition-all duration-200 hover:scale-[1.02] hover:shadow-glow-clay active:scale-[0.98];
+  }
+  .btn-ochre {
+    @apply bg-ochre hover:bg-ochre-dark text-slate-900 font-semibold px-6 py-3 rounded-xl
+           transition-all duration-200 hover:scale-[1.02] hover:shadow-glow-ochre active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply border border-white/20 hover:border-ochre/60 text-white/80 hover:text-ochre
+           font-medium px-6 py-3 rounded-xl transition-all duration-200;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    @apply rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300;
+  }
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--clay);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--clay-light); }
+
+/* ─── Selection ─────────────────────────────────────────── */
+::selection {
+  background: rgba(139,38,30,0.35);
+  color: var(--cream);
+}
+
+/* ─── Page transition ───────────────────────────────────── */
+.page-enter {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 350ms ease, transform 350ms ease;
+}
+
+/* ─── Telugu font rendering ─────────────────────────────── */
+.font-telugu {
+  font-family: 'Noto Sans Telugu', 'Gautami', sans-serif;
+  font-size: 0.95em;
+}
+
+/* ─── Heat Slider ───────────────────────────────────────── */
+.heat-track {
+  background: linear-gradient(to right, #F0C060, #E5A93C, #C48A1E, #B03028, #8B261E, #4A0E0A);
+  border-radius: 99px;
+}
+
+/* ─── Heritage Box droppable highlight ──────────────────── */
+.drop-target-active {
+  border: 2px dashed var(--ochre) !important;
+  background: rgba(229,169,60,0.08) !important;
+}
+
+/* ─── Animations ────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, rgba(255,255,255,0.08) 50%, var(--bg-card) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
