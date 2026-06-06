@@ -178,13 +178,10 @@ export default function HeritageBoxSampler() {
                       {box.map((item, idx) => (
                         <Draggable key={item.productId} draggableId={`box-${item.productId}`} index={idx}>
                           {(drag) => (
-                            <motion.div
+                            <div
                               ref={drag.innerRef}
                               {...drag.draggableProps}
                               {...drag.dragHandleProps}
-                              initial={{ opacity: 0, x: 20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -20 }}
                               className="flex items-center gap-3 p-2 rounded-xl"
                               style={{ background: 'var(--bg-mid)', ...drag.draggableProps.style }}
                             >
@@ -202,7 +199,7 @@ export default function HeritageBoxSampler() {
                               >
                                 <FiTrash2 size={14} />
                               </button>
-                            </motion.div>
+                            </div>
                           )}
                         </Draggable>
                       ))}
