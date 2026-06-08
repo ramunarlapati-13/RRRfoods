@@ -18,12 +18,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('rkfoods_cart');
+    const saved = localStorage.getItem('rrrfoods_cart');
     if (saved) setItems(JSON.parse(saved));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('rkfoods_cart', JSON.stringify(items));
+    localStorage.setItem('rrrfoods_cart', JSON.stringify(items));
   }, [items]);
 
   const addItem = (item: CartItem) => {

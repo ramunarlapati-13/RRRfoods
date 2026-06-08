@@ -15,8 +15,8 @@ export default function Footer() {
                 <span className="text-cream font-display font-black text-xl">R</span>
               </div>
               <div>
-                <p className="font-display font-bold text-xl" style={{ color: 'var(--text-primary)' }}>Ramakrishna Foods</p>
-                <p className="text-sm font-telugu" style={{ color: 'var(--text-secondary)' }}>రామకృష్ణ ఫుడ్స్</p>
+                <p className="font-display font-bold text-xl" style={{ color: 'var(--text-primary)' }}>RRR Foods</p>
+                <p className="text-sm font-telugu" style={{ color: 'var(--text-secondary)' }}>ఆర్ఆర్ఆర్ ఫుడ్స్</p>
               </div>
             </div>
             <p className="text-sm leading-relaxed max-w-xs" style={{ color: 'var(--text-secondary)' }}>

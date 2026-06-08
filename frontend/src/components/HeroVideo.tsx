@@ -66,7 +66,7 @@ export default function HeroVideo() {
           transition={{ delay: 0.5 }}
           className="font-telugu text-2xl text-ochre/80 mb-2"
         >
-          రామకృష్ణ ఫుడ్స్
+          ఆర్ఆర్ఆర్ ఫుడ్స్
         </motion.p>
 
         <motion.p

@@ -7,15 +7,15 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Ramakrishna Foods – రామకృష్ణ ఫుడ్స్ | Authentic Telugu Pickles & Sweets',
+  title: 'RRR Foods – ఆర్ఆర్ఆర్ ఫుడ్స్ | Authentic Telugu Pickles & Sweets',
   description:
-    'Order authentic Telugu pickles (Avakaya, Gongura, Nimma) and traditional sweets (Pootharekulu, Bandar Laddu) directly from Ramakrishna Foods. Free delivery across India.',
+    'Order authentic Telugu pickles (Avakaya, Gongura, Nimma) and traditional sweets (Pootharekulu, Bandar Laddu) directly from RRR Foods. Free delivery across India.',
   keywords: ['Telugu pickles', 'Avakaya', 'Gongura', 'Pootharekulu', 'Bandar Laddu', 'Andhra pickles', 'online grocery'],
   openGraph: {
-    title: 'Ramakrishna Foods – Authentic Telugu Pickles & Sweets',
+    title: 'RRR Foods – Authentic Telugu Pickles & Sweets',
     description: 'Heritage-first culinary brand delivering traditional Telugu flavours to your doorstep.',
-    url: 'https://ramakrishnafoods.telugu.in',
-    siteName: 'Ramakrishna Foods',
+    url: 'https://rrrfoods.telugu.in',
+    siteName: 'RRR Foods',
     locale: 'en_IN',
     type: 'website',
   },

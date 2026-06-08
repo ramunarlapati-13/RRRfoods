@@ -56,10 +56,10 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:block">
               <p className="font-display font-bold text-lg leading-tight" style={{ color: 'var(--text-primary)' }}>
-                Ramakrishna Foods
+                RRR Foods
               </p>
               <p className="text-xs font-telugu" style={{ color: 'var(--text-secondary)' }}>
-                రామకృష్ణ ఫుడ్స్
+                ఆర్ఆర్ఆర్ ఫుడ్స్
               </p>
             </div>
           </Link>

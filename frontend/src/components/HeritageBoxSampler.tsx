@@ -11,7 +11,7 @@ import { FiTrash2, FiShoppingCart, FiInfo } from 'react-icons/fi';
 
 const MAX_ITEMS = 4;
 const BOX_WEIGHT_PER_ITEM = 200; // grams
-const LS_KEY = 'rkfoods_heritage_box';
+const LS_KEY = 'rrrfoods_heritage_box';
 
 const ELIGIBLE = PRODUCTS.filter((p) => p.category === 'pickles' || p.category === 'sweets').map(
   (p): HeritageBoxItem => ({

@@ -22,7 +22,7 @@ const TABS = [
 ];
 
 // Simple admin check — in production use Firebase custom claims
-const ADMIN_EMAILS = ['admin@ramakrishnafoods.in', 'ramu@rexplore.tech'];
+const ADMIN_EMAILS = ['admin@rrrfoods.in', 'ramu@rexplore.tech'];
 
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
