@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -24,7 +24,7 @@ const INITIAL: FormData = { name: '', phone: '', email: '', line1: '', line2: ''
 
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [form, setForm] = useState<FormData>({
     ...INITIAL,
@@ -72,8 +72,17 @@ export default function CheckoutPage() {
     }
   };
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/cart');
+    }
+  }, [authLoading, router, user]);
+
+  if (authLoading) {
+    return null;
+  }
+
   if (!user) {
-    router.replace('/cart');
     return null;
   }
 
