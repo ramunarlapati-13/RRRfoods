@@ -180,8 +180,8 @@ export default function HeritageBoxSampler() {
                           {(drag) => (
                             <motion.div
                               ref={drag.innerRef}
-                              {...drag.draggableProps}
-                              {...drag.dragHandleProps}
+                              {...(drag.draggableProps as any)}
+                              {...(drag.dragHandleProps as any)}
                               initial={{ opacity: 0, x: 20 }}
                               animate={{ opacity: 1, x: 0 }}
                               exit={{ opacity: 0, x: -20 }}
