@@ -25,10 +25,15 @@ export default function Footer() {
             </p>
             {/* Social */}
             <div className="flex gap-4 mt-6">
-              {[FiInstagram, FiYoutube].map((Icon, i) => (
+              {[
+                { Icon: FiInstagram, href: '#' },
+                { Icon: FiYoutube, href: 'https://m.youtube.com/@RRRFOODS-y4v' }
+              ].map(({ Icon, href }, i) => (
                 <motion.a
                   key={i}
-                  href="#"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.15, color: '#E5A93C' }}
                   className="p-2.5 glass rounded-xl transition-colors"
                   style={{ color: 'var(--text-secondary)' }}
