@@ -24,16 +24,6 @@
 - **Deployment Pipeline:** Vercel for continuous integration and hosting
 - **Structure:** Divided into `/frontend` and `/backend`
 
-## 🗂️ Project Structure
-```
-.
-├── /frontend             # Next.js Application and UI Components
-├── /backend              # Backend APIs (if applicable)
-├── firebase.json         # Firebase Configuration
-├── firestore.rules       # Firestore Security Rules
-├── storage.rules         # Firebase Storage Rules
-└── ...
-```
 
 ## 🎨 Visual Identity
 The platform implements a premium, high-contrast aesthetic rooted in authentic Telugu culture:
