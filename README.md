@@ -2,12 +2,6 @@
 
 **Ramakrishna Foods (రామకృష్ణ ఫుడ్స్)** is an elite, heritage-first culinary brand dedicated to delivering traditional Telugu pickles, condiments, and premium sweets. This repository contains the source code for the digital flagship platform bridging generations of pure taste and household trust with high-performance e-commerce architecture.
 
-## 🚀 Live Demo & Domains
-- **Target Domain:** [ramakrishnafoods.telugu.in](http://ramakrishnafoods.telugu.in)
-- **Staging / Live Events:** [vnlivevents-rexploretech.vercel.app](https://vnlivevents-rexploretech.vercel.app/)
-- **Project Lead:** Ramu Narlapati (Founder, Rexplore Technologies)
-- **Client Support Lead:** RSMK (R. Srinivasa Manikanta)
-
 ## 📦 Features
 - **Traditional Telugu Pickles & Sweets:** High-quality, authentic products from various Telugu regions.
 - **Product Categorization:** Supports robust filtering including Veg and Non-Veg modes for meals and pickles.
