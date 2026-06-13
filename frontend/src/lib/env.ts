@@ -25,7 +25,7 @@ function requireEnv(key: string): string {
 // ── Client-safe Supabase Web SDK config (NEXT_PUBLIC_) ───────────────────────
 export const clientEnv = {
   supabase: {
-    url: requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
-    anonKey: requireEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   },
 } as const;

@@ -16,8 +16,8 @@ export default function HeroVideo() {
         poster="/hero-poster.jpg"
         aria-hidden="true"
       >
-        {/* Replace with a real video URL once available */}
-        <source src="/hero.mp4" type="video/mp4" />
+        {/* High-definition looping video showing spices, matching brand guidelines */}
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-spices-spilling-on-a-wooden-surface-34208-large.mp4" type="video/mp4" />
       </video>
 
       {/* Gradient overlay */}
