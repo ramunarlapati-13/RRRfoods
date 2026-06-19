@@ -29,3 +29,4 @@ The platform implements a premium, high-contrast aesthetic rooted in authentic T
 ---
 **© 2026 Rexplore Technologies. All Rights Reserved.**
 Central Portal: [rexplore.tech](https://rexplore.tech)
+YouTube: [RRR Foods](https://youtube.com/@rrrfoods2003?si=Rd7wq1CWGAz_q3gO)
