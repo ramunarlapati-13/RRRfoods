@@ -79,12 +79,12 @@ export default function Footer() {
               <li>
                 <a
                   id="footer-phone-link"
-                  href="tel:9876543210"
+                  href="tel:9704371867"
                   className="flex items-center gap-2 text-sm hover:text-ochre transition-colors"
                   style={{ color: 'var(--text-secondary)' }}
                 >
                   <FiPhone size={14} />
-                  9876543210
+                  9704371867
                 </a>
               </li>
               <li>

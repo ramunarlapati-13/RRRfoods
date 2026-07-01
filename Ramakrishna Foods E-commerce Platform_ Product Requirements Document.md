@@ -84,7 +84,7 @@ To maintain strict contractual alignment with B2B clients and commercial distrib
 
 The footer and contact page will feature direct hotlinks matching the poster details:
 
-* **Phone Ordering:** Dynamic hotlink to dial 9876543210\.  
+* **Phone Ordering:** Dynamic hotlink to dial 9704371867\.  
 * **Customer Support Desk:** Direct route to open a chat ticket or email the support desk managed by **REXPLORE TECH**.
 
 ### **4.6 User Checkout Flow**
