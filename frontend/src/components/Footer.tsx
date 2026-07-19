@@ -55,6 +55,7 @@ export default function Footer() {
                 { label: 'Pickles', href: '/products?category=pickles' },
                 { label: 'Sweets', href: '/products?category=sweets' },
                 { label: 'Heritage Box', href: '/sampler' },
+                { label: 'Contact Us', href: '/contact' },
                 { label: 'My Orders', href: '/orders' },
               ].map((l) => (
                 <li key={l.href}>
