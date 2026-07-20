@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -28,12 +28,17 @@ const ELIGIBLE = PRODUCTS.filter((p) => p.category === 'pickles' || p.category =
 export default function HeritageBoxSampler() {
   const { addItem } = useCart();
   const [box, setBox] = useState<HeritageBoxItem[]>([]);
+  const boxIdsRef = useRef<Set<string>>(new Set());
 
   // Restore from localStorage
   useEffect(() => {
     const saved = localStorage.getItem(LS_KEY);
     if (saved) {
-      try { setBox(JSON.parse(saved)); } catch { /* ignore */ }
+      try {
+        const parsed = JSON.parse(saved);
+        setBox(parsed);
+        parsed.forEach((item: HeritageBoxItem) => boxIdsRef.current.add(item.productId));
+      } catch { /* ignore */ }
     }
   }, []);
 
@@ -47,16 +52,19 @@ export default function HeritageBoxSampler() {
       toast.error(`Your Heritage Box can hold max ${MAX_ITEMS} items.`);
       return;
     }
-    if (box.find((b) => b.productId === item.productId)) {
+    if (boxIdsRef.current.has(item.productId)) {
       toast.error(`${item.name} is already in your box.`);
       return;
     }
+    boxIdsRef.current.add(item.productId);
     setBox((prev) => [...prev, item]);
     toast.success(`${item.name} added to Heritage Box! 🎁`);
   };
 
-  const removeFromBox = (productId: string) =>
+  const removeFromBox = (productId: string) => {
+    boxIdsRef.current.delete(productId);
     setBox((prev) => prev.filter((i) => i.productId !== productId));
+  };
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -87,6 +95,7 @@ export default function HeritageBoxSampler() {
     box.forEach((item) =>
       addItem({ productId: item.productId, name: item.name, imageUrl: item.imageUrl, sellingPrice: item.sellingPrice, quantity: 1, sku: '' })
     );
+    boxIdsRef.current.clear();
     setBox([]);
     toast.success('Heritage Box added to cart! 🎁');
   };
