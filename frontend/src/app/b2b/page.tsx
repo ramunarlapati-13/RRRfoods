@@ -18,6 +18,7 @@ export default function B2bPortal() {
   const acceptAgreement = useStore((state) => state.acceptB2bAgreement);
 
   const [projectIdInput, setProjectIdInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [agreementChecked, setAgreementChecked] = useState(false);
   const [signatureName, setSignatureName] = useState('');
@@ -54,25 +55,27 @@ export default function B2bPortal() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectIdInput.trim()) return;
+    if (!projectIdInput.trim() || !passwordInput.trim()) return;
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('b2b_sessions')
-        .select('*')
-        .eq('project_id', projectIdInput.trim())
-        .single();
+      const { data, error } = await supabase.rpc('login_b2b', {
+        p_project_id: projectIdInput.trim(),
+        p_password: passwordInput.trim(),
+      });
 
-      if (error || !data) {
-        toast.error('Invalid Project ID. Verify and try again.');
+      if (error || !data || data.length === 0) {
+        toast.error('Invalid Project ID or Password. Verify and try again.');
         return;
       }
 
+      const sessionData = data[0];
+
       setStoreSession({
-        projectId: data.project_id,
-        status: data.status,
-        signedName: data.signed_name || undefined,
+        projectId: sessionData.project_id,
+        password: passwordInput.trim(),
+        status: sessionData.status,
+        signedName: sessionData.signed_name || undefined,
       });
 
       toast.success('B2B Profile Loaded.');
@@ -149,6 +152,20 @@ export default function B2bPortal() {
                 placeholder="e.g. VSVBQUBB"
                 value={projectIdInput}
                 onChange={(e) => setProjectIdInput(e.target.value)}
+                required
+                className="w-full border rounded-xl px-4 py-3 text-sm outline-none focus:border-ochre bg-transparent mb-4"
+                style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+              />
+
+              <label htmlFor="b2b-password" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
+                Password
+              </label>
+              <input
+                id="b2b-password"
+                type="password"
+                placeholder="Enter your password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
                 required
                 className="w-full border rounded-xl px-4 py-3 text-sm outline-none focus:border-ochre bg-transparent"
                 style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
