@@ -1,5 +1,29 @@
 // Shared TypeScript types for RK Foods platform
 
+export interface DatabaseProduct {
+  id: string;
+  sku: string;
+  name: string;
+  name_telugu_script?: string;
+  slug: string;
+  category: 'pickles' | 'sweets' | 'meals';
+  diet_type?: 'veg' | 'nonveg';
+  description?: string;
+  ingredients?: string[];
+  image_url?: string;
+  images?: string[];
+  actual_price: number | string;
+  selling_price: number | string;
+  rating?: number | string;
+  review_count?: number | string;
+  in_stock: boolean | string;
+  available_locations?: string[];
+  heat_level?: number | string;
+  featured: boolean | string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Product {
   id: string;
   sku: string;            // e.g. RKF260605
