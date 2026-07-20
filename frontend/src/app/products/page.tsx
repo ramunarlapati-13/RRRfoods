@@ -8,6 +8,7 @@ import { Category, DietFilter, Product } from '@/lib/types';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiSearch } from 'react-icons/fi';
 
 function ProductsGrid() {
@@ -98,8 +99,7 @@ function ProductsGrid() {
                     className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors border-b last:border-b-0"
                     style={{ borderColor: 'var(--border)' }}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.imageUrl} alt={p.name} className="w-8 h-8 rounded-lg object-cover" />
+                    <Image src={p.imageUrl} alt={p.name} width={32} height={32} className="w-8 h-8 rounded-lg object-cover" />
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wider text-ochre">{p.sku}</p>
                       <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{p.name}</p>
