@@ -147,9 +147,9 @@ export default function ReviewSection({ product, onReviewSubmitted }: Props) {
 
       fetchReviews();
       onReviewSubmitted();
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error posting review:', err);
-      toast.error(err.message || 'Failed to submit review.');
+      toast.error(err instanceof Error ? err.message : 'Failed to submit review.');
     } finally {
       setUploading(false);
     }
