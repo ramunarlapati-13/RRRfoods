@@ -26,7 +26,7 @@ const ELIGIBLE = PRODUCTS.filter((p) => p.category === 'pickles' || p.category =
 );
 
 export default function HeritageBoxSampler() {
-  const { addItem } = useCart();
+  const { addMultipleItems } = useCart();
   const [box, setBox] = useState<HeritageBoxItem[]>([]);
 
   // Restore from localStorage
@@ -84,9 +84,15 @@ export default function HeritageBoxSampler() {
       toast.error('Add at least 3 items to complete your Heritage Box.');
       return;
     }
-    box.forEach((item) =>
-      addItem({ productId: item.productId, name: item.name, imageUrl: item.imageUrl, sellingPrice: item.sellingPrice, quantity: 1, sku: '' })
-    );
+    const itemsToAdd = box.map((item) => ({
+      productId: item.productId,
+      name: item.name,
+      imageUrl: item.imageUrl,
+      sellingPrice: item.sellingPrice,
+      quantity: 1,
+      sku: '',
+    }));
+    addMultipleItems(itemsToAdd);
     setBox([]);
     toast.success('Heritage Box added to cart! 🎁');
   };
