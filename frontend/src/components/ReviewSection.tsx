@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { Review, Product } from '@/lib/types';
@@ -203,11 +204,12 @@ export default function ReviewSection({ product, onReviewSubmitted }: Props) {
                 {(r.mediaUrls.images.length > 0 || r.mediaUrls.videos.length > 0 || r.mediaUrls.audios.length > 0) && (
                   <div className="flex flex-wrap gap-4 pt-2">
                     {r.mediaUrls.images.map((img, i) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         key={i}
                         src={img}
                         alt="Customer unboxing"
+                        width={80}
+                        height={80}
                         className="w-20 h-20 object-cover rounded-xl border border-white/10 hover:scale-105 transition-transform cursor-pointer"
                         onClick={() => window.open(img, '_blank')}
                       />
