@@ -123,9 +123,10 @@ export const useStore = create<AppState>()(
           try {
             const { supabase } = await import('./supabase');
             await supabase
-              .from('b2b_sessions')
-              .update({ status: 'Active', signed_name: signedName, updated_at: new Date() })
-              .eq('project_id', session.projectId);
+              .rpc('accept_b2b_agreement', {
+                p_project_id: session.projectId,
+                p_signed_name: signedName
+              });
           } catch (err) {
             console.error('Error syncing B2B agreement to Supabase:', err);
           }

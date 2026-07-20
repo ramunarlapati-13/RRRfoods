@@ -38,10 +38,13 @@ export default function B2bPortal() {
     setLoadingLogs(true);
     try {
       const { data, error } = await supabase
-        .from('project_logs')
-        .select('*')
-        .eq('project_id', storeSession.projectId)
-        .order('created_at', { ascending: false });
+        .rpc('get_project_logs', { p_project_id: storeSession.projectId });
+
+      // Since rpc doesn't sort by default like we had before, we might want to sort it here or modify RPC.
+      // Modifying sorting in frontend here since it's easy:
+      if (data) {
+        data.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      }
 
       if (error) throw error;
       setLogs(data || []);
@@ -59,20 +62,19 @@ export default function B2bPortal() {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('b2b_sessions')
-        .select('*')
-        .eq('project_id', projectIdInput.trim())
-        .single();
+        .rpc('get_b2b_session', { p_project_id: projectIdInput.trim() });
 
-      if (error || !data) {
+      if (error || !data || data.length === 0) {
         toast.error('Invalid Project ID. Verify and try again.');
         return;
       }
 
+      const sessionData = data[0];
+
       setStoreSession({
-        projectId: data.project_id,
-        status: data.status,
-        signedName: data.signed_name || undefined,
+        projectId: sessionData.project_id,
+        status: sessionData.status as 'Pending' | 'Active',
+        signedName: sessionData.signed_name || undefined,
       });
 
       toast.success('B2B Profile Loaded.');

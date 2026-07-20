@@ -185,15 +185,14 @@ create table if not exists public.b2b_sessions (
 alter table public.b2b_sessions enable row level security;
 
 -- B2B Sessions Policies (Dashboard clients update statuses directly)
-create policy "Allow B2B read access to everyone" on public.b2b_sessions
-  for select using (true);
-
-create policy "Allow B2B updates" on public.b2b_sessions
-  for update using (true);
-
-create policy "Allow B2B creation" on public.b2b_sessions
-  for insert with check (true);
-
+-- B2B Sessions Policies (Only Admins can access directly now, others use RPC)
+create policy "Allow Admin full access to B2B sessions" on public.b2b_sessions
+  for all using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );
 
 -- 7. B2B Project Logs Table
 create table if not exists public.project_logs (
@@ -206,8 +205,58 @@ create table if not exists public.project_logs (
 -- Enable RLS on Project Logs
 alter table public.project_logs enable row level security;
 
-create policy "Allow B2B log read access" on public.project_logs
-  for select using (true);
+create policy "Allow Admin full access to project logs" on public.project_logs
+  for all using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );
+
+-- ==========================================
+-- B2B SECURE RPC FUNCTIONS
+-- ==========================================
+
+create or replace function public.get_b2b_session(p_project_id text)
+returns table (
+  project_id text,
+  status text,
+  signed_name text,
+  updated_at timestamp with time zone
+)
+language sql
+security definer
+as $$
+  select project_id, status, signed_name, updated_at
+  from public.b2b_sessions
+  where project_id = p_project_id;
+$$;
+
+create or replace function public.accept_b2b_agreement(p_project_id text, p_signed_name text)
+returns void
+language sql
+security definer
+as $$
+  update public.b2b_sessions
+  set status = 'Active', signed_name = p_signed_name, updated_at = now()
+  where project_id = p_project_id;
+$$;
+
+create or replace function public.get_project_logs(p_project_id text)
+returns table (
+  id uuid,
+  project_id text,
+  log_message text,
+  created_at timestamp with time zone
+)
+language sql
+security definer
+as $$
+  select l.id, l.project_id, l.log_message, l.created_at
+  from public.project_logs l
+  join public.b2b_sessions s on l.project_id = s.project_id
+  where l.project_id = p_project_id and s.status = 'Active';
+$$;
 
 
 -- ==========================================
