@@ -18,8 +18,6 @@ export default function AuthModal({ isOpen, onClose }: Props) {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
-  const [mockOtp, setMockOtp] = useState('');
-  const [isMocked, setIsMocked] = useState(false);
 
   const handleGoogle = async () => {
     setLoading(true);
@@ -47,17 +45,6 @@ export default function AuthModal({ isOpen, onClose }: Props) {
     try {
       const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`;
 
-      // DEMO MODE: In development or if phone is 9999999999, skip actual SMS
-      if (process.env.NODE_ENV === 'development' || phone === '9999999999') {
-        const generatedOtp = '123456';
-        setMockOtp(generatedOtp);
-        setIsMocked(true);
-        setStep('otp');
-        toast.success(`Demo Mode: OTP sent! Use code ${generatedOtp}`);
-        setLoading(false);
-        return;
-      }
-
       const { error } = await supabase.auth.signInWithOtp({
         phone: formattedPhone,
       });
@@ -82,61 +69,14 @@ export default function AuthModal({ isOpen, onClose }: Props) {
     try {
       const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`;
       
-      if (isMocked) {
-        if (otp !== mockOtp) {
-          toast.error('Invalid OTP. Please try again.');
-          return;
-        }
-
-        // Mock auth via standard email/password behind the scenes
-        const email = `phone_${phone}@gmail.com`;
-        const password = `OtpPassword123!`;
-
-        let authResult;
-        try {
-          authResult = await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
-        } catch (signInErr) {
-          // Ignore and proceed to signup
-        }
-
-        if (!authResult || authResult.error) {
-          const signupRes = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                phone: formattedPhone,
-              }
-            }
-          });
-          if (signupRes.error) throw signupRes.error;
-          authResult = signupRes;
-        }
-
-        // Link the profile table correctly
-        if (authResult.data?.user) {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .update({ phone_number: formattedPhone })
-            .eq('id', authResult.data.user.id);
-          if (profileError) console.error('Error updating profile:', profileError);
-        }
-
-        toast.success('Phone verified (Demo Mode)! Welcome 🎉');
-        onClose();
-      } else {
-        const { error } = await supabase.auth.verifyOtp({
-          phone: formattedPhone,
-          token: otp,
-          type: 'sms',
-        });
-        if (error) throw error;
-        toast.success('Phone verified! Welcome 🎉');
-        onClose();
-      }
+      const { error } = await supabase.auth.verifyOtp({
+        phone: formattedPhone,
+        token: otp,
+        type: 'sms',
+      });
+      if (error) throw error;
+      toast.success('Phone verified! Welcome 🎉');
+      onClose();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Invalid OTP.';
       toast.error(message || 'Invalid OTP. Please try again.');
@@ -150,8 +90,6 @@ export default function AuthModal({ isOpen, onClose }: Props) {
     setStep('choose');
     setPhone('');
     setOtp('');
-    setMockOtp('');
-    setIsMocked(false);
   };
 
   return (
