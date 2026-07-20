@@ -176,6 +176,7 @@ create policy "Allow users to update/delete their own reviews" on public.reviews
 -- 6. B2B Sessions (Unique Project ID Lock)
 create table if not exists public.b2b_sessions (
   project_id text primary key,
+  password text not null,
   status text not null check (status in ('Pending', 'Active')),
   signed_name text,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
@@ -184,15 +185,33 @@ create table if not exists public.b2b_sessions (
 -- Enable RLS on B2B Sessions
 alter table public.b2b_sessions enable row level security;
 
--- B2B Sessions Policies (Dashboard clients update statuses directly)
-create policy "Allow B2B read access to everyone" on public.b2b_sessions
-  for select using (true);
+-- Drop insecure open policies if they exist (handled by omitting them and keeping RLS enabled without policies, meaning default deny)
 
-create policy "Allow B2B updates" on public.b2b_sessions
-  for update using (true);
+-- Secure RPC for Login
+create or replace function public.login_b2b(p_project_id text, p_password text)
+returns setof public.b2b_sessions
+language plpgsql
+security definer
+as $$
+begin
+  return query
+  select * from public.b2b_sessions
+  where project_id = p_project_id and password = p_password;
+end;
+$$;
 
-create policy "Allow B2B creation" on public.b2b_sessions
-  for insert with check (true);
+-- Secure RPC for Accepting Agreement
+create or replace function public.accept_b2b_agreement(p_project_id text, p_password text, p_signed_name text)
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  update public.b2b_sessions
+  set status = 'Active', signed_name = p_signed_name, updated_at = now()
+  where project_id = p_project_id and password = p_password;
+end;
+$$;
 
 
 -- 7. B2B Project Logs Table
@@ -240,8 +259,8 @@ values
 on conflict (pincode) do nothing;
 
 -- Seed B2B Client session
-insert into public.b2b_sessions (project_id, status)
-values ('VSVBQUBB', 'Pending')
+insert into public.b2b_sessions (project_id, password, status)
+values ('VSVBQUBB', 'b2b-secret-2026', 'Pending')
 on conflict (project_id) do nothing;
 
 -- Seed Project Execution Logs
