@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { PRODUCTS } from '@/lib/products';
+import { DatabaseProduct } from '@/lib/types';
 import { FiTrash2, FiEdit2, FiPlus } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
@@ -18,8 +19,7 @@ export default function AdminProducts() {
           .order('sku', { ascending: true });
         if (error) throw error;
         if (data && data.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setProducts(data.map((p: any) => ({
+          setProducts(data.map((p: DatabaseProduct) => ({
             id: p.id,
             sku: p.sku,
             name: p.name,

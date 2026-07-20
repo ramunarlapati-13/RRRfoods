@@ -1,4 +1,4 @@
-import { Product } from './types';
+import { Product, DatabaseProduct } from './types';
 import { supabase } from './supabase';
 
 // Static seed data used for UI development before Firebase is connected
@@ -198,7 +198,6 @@ export const FEATURED_PRODUCTS = PRODUCTS.filter((p) => p.featured);
 export const PICKLE_PRODUCTS = PRODUCTS.filter((p) => p.category === 'pickles');
 export const SWEET_PRODUCTS = PRODUCTS.filter((p) => p.category === 'sweets');
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchProductsFromDb(): Promise<Product[]> {
   try {
     const { data, error } = await supabase
@@ -209,8 +208,7 @@ export async function fetchProductsFromDb(): Promise<Product[]> {
     if (error) throw error;
     if (!data || data.length === 0) return PRODUCTS;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return data.map((p: any) => ({
+    return data.map((p: DatabaseProduct) => ({
       id: p.id,
       sku: p.sku,
       name: p.name,
