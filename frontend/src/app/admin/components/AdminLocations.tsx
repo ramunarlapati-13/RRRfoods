@@ -27,8 +27,7 @@ export default function AdminLocations() {
         const { data, error } = await supabase.from('locations').select('*').order('city', { ascending: true });
         if (error) throw error;
         if (data && data.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setLocations(data.map((l: any) => ({
+          setLocations(data.map((l: Location) => ({
             id: l.id,
             city: l.city,
             state: l.state,
@@ -60,9 +59,9 @@ export default function AdminLocations() {
       const { data, error } = await supabase.from('locations').insert(loc).select('id').single();
       if (error) throw error;
       if (data) id = data.id;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error adding location to Supabase:', err);
-      toast.error(err.message || 'Failed to add to database, using local fallback.');
+      toast.error(err instanceof Error ? err.message : 'Failed to add to database, using local fallback.');
     }
     setLocations((prev) => [...prev, { ...loc, id }]);
     setNewCity(''); setNewState(''); setNewPin('');
