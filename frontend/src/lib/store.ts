@@ -37,15 +37,11 @@ export const useStore = create<AppState>()(
       cart: [],
       addItem: (product: Product, quantity = 1) => {
         const cart = get().cart;
-        const exists = cart.find((item) => item.productId === product.id);
-        if (exists) {
-          set({
-            cart: cart.map((item) =>
-              item.productId === product.id
-                ? { ...item, quantity: item.quantity + quantity }
-                : item
-            ),
-          });
+        const index = cart.findIndex((item) => item.productId === product.id);
+        if (index !== -1) {
+          const newCart = [...cart];
+          newCart[index] = { ...newCart[index], quantity: newCart[index].quantity + quantity };
+          set({ cart: newCart });
         } else {
           set({
             cart: [
@@ -64,15 +60,11 @@ export const useStore = create<AppState>()(
       },
       addCartItem: (item: CartItem) => {
         const cart = get().cart;
-        const exists = cart.find((i) => i.productId === item.productId);
-        if (exists) {
-          set({
-            cart: cart.map((i) =>
-              i.productId === item.productId
-                ? { ...i, quantity: i.quantity + item.quantity }
-                : i
-            ),
-          });
+        const index = cart.findIndex((i) => i.productId === item.productId);
+        if (index !== -1) {
+          const newCart = [...cart];
+          newCart[index] = { ...newCart[index], quantity: newCart[index].quantity + item.quantity };
+          set({ cart: newCart });
         } else {
           set({ cart: [...cart, item] });
         }
@@ -85,11 +77,13 @@ export const useStore = create<AppState>()(
           get().removeItem(productId);
           return;
         }
-        set({
-          cart: get().cart.map((item) =>
-            item.productId === productId ? { ...item, quantity } : item
-          ),
-        });
+        const cart = get().cart;
+        const index = cart.findIndex((item) => item.productId === productId);
+        if (index !== -1) {
+          const newCart = [...cart];
+          newCart[index] = { ...newCart[index], quantity };
+          set({ cart: newCart });
+        }
       },
       clearCart: () => set({ cart: [] }),
       cartTotal: () => {
@@ -103,9 +97,9 @@ export const useStore = create<AppState>()(
       wishlist: [],
       toggleWishlist: (product: Product) => {
         const wishlist = get().wishlist;
-        const exists = wishlist.some((item) => item.id === product.id);
-        if (exists) {
-          set({ wishlist: wishlist.filter((item) => item.id !== product.id) });
+        const index = wishlist.findIndex((item) => item.id === product.id);
+        if (index !== -1) {
+          set({ wishlist: [...wishlist.slice(0, index), ...wishlist.slice(index + 1)] });
         } else {
           set({ wishlist: [...wishlist, product] });
         }
