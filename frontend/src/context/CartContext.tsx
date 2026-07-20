@@ -6,6 +6,7 @@ import { CartItem } from '@/lib/types';
 interface CartContextValue {
   items: CartItem[];
   addItem: (item: CartItem) => void;
+  addMultipleItems: (items: CartItem[]) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, qty: number) => void;
   clearCart: () => void;
@@ -18,6 +19,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const cart = useStore((state) => state.cart);
   const addCartItem = useStore((state) => state.addCartItem);
+  const storeAddMultipleItems = useStore((state) => state.addMultipleItems);
   const storeRemoveItem = useStore((state) => state.removeItem);
   const storeUpdateQuantity = useStore((state) => state.updateQuantity);
   const storeClearCart = useStore((state) => state.clearCart);
@@ -26,6 +28,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = (item: CartItem) => {
     addCartItem(item);
+  };
+
+  const addMultipleItems = (items: CartItem[]) => {
+    storeAddMultipleItems(items);
   };
 
   const removeItem = (productId: string) => {
@@ -45,6 +51,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       value={{
         items: cart,
         addItem,
+        addMultipleItems,
         removeItem,
         updateQuantity,
         clearCart,
