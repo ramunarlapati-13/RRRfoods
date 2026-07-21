@@ -2,62 +2,122 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { useStore } from './store';
 import { Product } from './types';
 
-describe('useStore - Wishlist', () => {
-  const mockProduct: Product = {
-    id: 'product-1',
-    sku: 'RKF-TEST-1',
-    name: 'Test Pickle',
-    nameTeluguScript: 'టెస్ట్ పచ్చడి',
-    slug: 'test-pickle',
-    category: 'pickles',
-    dietType: 'veg',
-    description: 'A test pickle',
-    ingredients: ['Mango', 'Salt', 'Chili Powder'],
-    imageUrl: '/images/test.jpg',
-    images: ['/images/test.jpg'],
-    actualPrice: 200,
-    sellingPrice: 150,
-    rating: 4.5,
-    reviewCount: 10,
-    inStock: true,
-    availableLocations: ['HYD'],
-    heatLevel: 8,
-    featured: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
+describe('cartTotal calculation', () => {
   beforeEach(() => {
     // Reset the store before each test
-    useStore.setState({ wishlist: [] });
+    useStore.getState().clearCart();
   });
 
-  it('should add a product to the wishlist if it does not exist', () => {
-    // Arrange
-    const { toggleWishlist, wishlist: initialWishlist } = useStore.getState();
-    expect(initialWishlist).toHaveLength(0);
-
-    // Act
-    useStore.getState().toggleWishlist(mockProduct);
-
-    // Assert
-    const { wishlist: updatedWishlist } = useStore.getState();
-    expect(updatedWishlist).toHaveLength(1);
-    expect(updatedWishlist[0]).toEqual(mockProduct);
+  it('should return 0 when the cart is empty', () => {
+    expect(useStore.getState().cartTotal()).toBe(0);
   });
 
-  it('should remove a product from the wishlist if it already exists', () => {
-    // Arrange
-    useStore.setState({ wishlist: [mockProduct] });
-    const { wishlist: initialWishlist } = useStore.getState();
-    expect(initialWishlist).toHaveLength(1);
-    expect(initialWishlist[0]).toEqual(mockProduct);
+  it('should calculate the correct total for a single item with quantity 1', () => {
+    const mockProduct: Product = {
+      id: 'p1',
+      sku: 'sku1',
+      name: 'Product 1',
+      nameTeluguScript: '',
+      slug: 'product-1',
+      category: 'sweets',
+      description: '',
+      ingredients: [],
+      imageUrl: '',
+      images: [],
+      actualPrice: 150,
+      sellingPrice: 100,
+      rating: 5,
+      reviewCount: 0,
+      inStock: true,
+      availableLocations: [],
+      heatLevel: 0,
+      featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    // Act
-    useStore.getState().toggleWishlist(mockProduct);
+    useStore.getState().addItem(mockProduct, 1);
+    expect(useStore.getState().cartTotal()).toBe(100);
+  });
 
-    // Assert
-    const { wishlist: updatedWishlist } = useStore.getState();
-    expect(updatedWishlist).toHaveLength(0);
+  it('should calculate the correct total for a single item with multiple quantity', () => {
+    const mockProduct: Product = {
+      id: 'p2',
+      sku: 'sku2',
+      name: 'Product 2',
+      nameTeluguScript: '',
+      slug: 'product-2',
+      category: 'sweets',
+      description: '',
+      ingredients: [],
+      imageUrl: '',
+      images: [],
+      actualPrice: 250,
+      sellingPrice: 200,
+      rating: 5,
+      reviewCount: 0,
+      inStock: true,
+      availableLocations: [],
+      heatLevel: 0,
+      featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    useStore.getState().addItem(mockProduct, 3); // 200 * 3 = 600
+    expect(useStore.getState().cartTotal()).toBe(600);
+  });
+
+  it('should calculate the correct total for multiple different items', () => {
+    const mockProduct1: Product = {
+      id: 'p1',
+      sku: 'sku1',
+      name: 'Product 1',
+      nameTeluguScript: '',
+      slug: 'product-1',
+      category: 'sweets',
+      description: '',
+      ingredients: [],
+      imageUrl: '',
+      images: [],
+      actualPrice: 150,
+      sellingPrice: 100,
+      rating: 5,
+      reviewCount: 0,
+      inStock: true,
+      availableLocations: [],
+      heatLevel: 0,
+      featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const mockProduct2: Product = {
+      id: 'p2',
+      sku: 'sku2',
+      name: 'Product 2',
+      nameTeluguScript: '',
+      slug: 'product-2',
+      category: 'sweets',
+      description: '',
+      ingredients: [],
+      imageUrl: '',
+      images: [],
+      actualPrice: 250,
+      sellingPrice: 200,
+      rating: 5,
+      reviewCount: 0,
+      inStock: true,
+      availableLocations: [],
+      heatLevel: 0,
+      featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    useStore.getState().addItem(mockProduct1, 2); // 100 * 2 = 200
+    useStore.getState().addItem(mockProduct2, 3); // 200 * 3 = 600
+
+    expect(useStore.getState().cartTotal()).toBe(800); // 200 + 600 = 800
   });
 });
