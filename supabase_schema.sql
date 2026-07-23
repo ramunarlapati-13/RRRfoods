@@ -23,6 +23,21 @@ create policy "Allow public read access to profiles" on public.profiles
 create policy "Allow users to update their own profile" on public.profiles
   for update using (auth.uid() = id);
 
+-- Prevent role privilege escalation
+create or replace function public.prevent_role_update()
+returns trigger as $$
+begin
+  if new.role is distinct from old.role then
+    new.role = old.role;
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_profile_role_update
+  before update on public.profiles
+  for each row execute procedure public.prevent_role_update();
+
 -- Trigger to automatically create a profile when a new user signs up in Supabase Auth
 create or replace function public.handle_new_user()
 returns trigger as $$
