@@ -226,6 +226,45 @@ create policy "Allow B2B log read access" on public.project_logs
 
 
 -- ==========================================
+-- STORAGE BUCKETS & POLICIES
+-- ==========================================
+
+-- Create reviews bucket if it doesn't exist
+insert into storage.buckets (id, name, public)
+values ('reviews', 'reviews', true)
+on conflict (id) do nothing;
+
+-- Enable RLS on storage.objects (if not already enabled)
+alter table storage.objects enable row level security;
+
+-- Policy: Allow public read access to the 'reviews' bucket
+create policy "Allow public read access to reviews bucket" on storage.objects
+  for select using (bucket_id = 'reviews');
+
+-- Policy: Allow authenticated users to upload to their own folder in the 'reviews' bucket
+create policy "Allow authenticated users to upload to their own folder" on storage.objects
+  for insert with check (
+    bucket_id = 'reviews' and
+    auth.role() = 'authenticated' and
+    (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Policy: Allow authenticated users to update/delete their own files in 'reviews' bucket
+create policy "Allow users to modify their own files" on storage.objects
+  for update using (
+    bucket_id = 'reviews' and
+    auth.role() = 'authenticated' and
+    (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "Allow users to delete their own files" on storage.objects
+  for delete using (
+    bucket_id = 'reviews' and
+    auth.role() = 'authenticated' and
+    (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- ==========================================
 -- SEED DATA
 -- ==========================================
 
