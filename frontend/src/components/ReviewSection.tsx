@@ -64,9 +64,11 @@ export default function ReviewSection({ product, onReviewSubmitted }: Props) {
   };
 
   const uploadFileToStorage = async (file: File, folder: string): Promise<string> => {
+    if (!user) throw new Error('You must sign in to upload files.');
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-    const filePath = `${folder}/${fileName}`;
+    const filePath = `${user.uid}/${folder}/${fileName}`;
 
     // Upload to 'reviews' bucket
     const { error } = await supabase.storage

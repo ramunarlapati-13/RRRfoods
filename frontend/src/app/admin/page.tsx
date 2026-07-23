@@ -20,9 +20,6 @@ const TABS = [
   { id: 'import' as AdminTab, label: 'Import', icon: FiUpload },
 ];
 
-// Simple admin check — in production use Firebase custom claims
-const ADMIN_EMAILS = ['admin@rrrfoods.in', 'ramu@rexplore.tech'];
-
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -31,11 +28,11 @@ export default function AdminDashboard() {
   if (loading) {
     return <div className="pt-32 text-center"><div className="skeleton h-8 w-48 mx-auto rounded-xl" /></div>;
   }
-  if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
+  if (!user || user.role !== 'admin') {
     return (
       <div className="pt-32 max-w-md mx-auto px-4 text-center">
         <h1 className="font-display font-bold text-3xl mb-4" style={{ color: 'var(--text-primary)' }}>Access Denied</h1>
-        <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>You don't have admin privileges.</p>
+        <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>You don&apos;t have admin privileges.</p>
         <button onClick={() => router.push('/')} className="btn-primary">Go Home</button>
       </div>
     );

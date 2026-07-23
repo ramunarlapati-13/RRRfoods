@@ -23,6 +23,21 @@ create policy "Allow public read access to profiles" on public.profiles
 create policy "Allow users to update their own profile" on public.profiles
   for update using (auth.uid() = id);
 
+-- Prevent role privilege escalation
+create or replace function public.prevent_role_update()
+returns trigger as $$
+begin
+  if new.role is distinct from old.role then
+    new.role = old.role;
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_profile_role_update
+  before update on public.profiles
+  for each row execute procedure public.prevent_role_update();
+
 -- Trigger to automatically create a profile when a new user signs up in Supabase Auth
 create or replace function public.handle_new_user()
 returns trigger as $$
@@ -209,6 +224,45 @@ alter table public.project_logs enable row level security;
 create policy "Allow B2B log read access" on public.project_logs
   for select using (true);
 
+
+-- ==========================================
+-- STORAGE BUCKETS & POLICIES
+-- ==========================================
+
+-- Create reviews bucket if it doesn't exist
+insert into storage.buckets (id, name, public)
+values ('reviews', 'reviews', true)
+on conflict (id) do nothing;
+
+-- Enable RLS on storage.objects (if not already enabled)
+alter table storage.objects enable row level security;
+
+-- Policy: Allow public read access to the 'reviews' bucket
+create policy "Allow public read access to reviews bucket" on storage.objects
+  for select using (bucket_id = 'reviews');
+
+-- Policy: Allow authenticated users to upload to their own folder in the 'reviews' bucket
+create policy "Allow authenticated users to upload to their own folder" on storage.objects
+  for insert with check (
+    bucket_id = 'reviews' and
+    auth.role() = 'authenticated' and
+    (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Policy: Allow authenticated users to update/delete their own files in 'reviews' bucket
+create policy "Allow users to modify their own files" on storage.objects
+  for update using (
+    bucket_id = 'reviews' and
+    auth.role() = 'authenticated' and
+    (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "Allow users to delete their own files" on storage.objects
+  for delete using (
+    bucket_id = 'reviews' and
+    auth.role() = 'authenticated' and
+    (storage.foldername(name))[1] = auth.uid()::text
+  );
 
 -- ==========================================
 -- SEED DATA
