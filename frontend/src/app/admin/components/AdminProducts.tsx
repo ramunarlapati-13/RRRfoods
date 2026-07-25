@@ -58,8 +58,8 @@ export default function AdminProducts() {
       if (error) throw error;
       setProducts((prev) => prev.filter((p) => p.id !== id));
       toast.success('Product deleted.');
-    } catch (err: any) {
-      toast.error(err.message || 'Delete failed.');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Delete failed.');
     }
   };
 

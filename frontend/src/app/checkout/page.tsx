@@ -62,8 +62,8 @@ export default function CheckoutPage() {
       if (error) throw error;
       clearCart();
       setSuccess(true);
-    } catch (err: any) {
-      toast.error(err.message || 'Order failed. Please try again.');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Order failed. Please try again.');
       console.error(err);
     } finally {
       setLoading(false);
