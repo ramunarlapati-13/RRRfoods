@@ -4,6 +4,7 @@ import { CartItem, Product } from './types';
 
 interface B2bSession {
   projectId: string;
+  password?: string;
   status: 'Pending' | 'Active';
   signedName?: string;
 }
@@ -119,15 +120,18 @@ export const useStore = create<AppState>()(
       setB2bSession: (session) => set({ b2bSession: session }),
       acceptB2bAgreement: async (signedName) => {
         const session = get().b2bSession;
-        if (session) {
+        if (session && session.password) {
           try {
             const { supabase } = await import('./supabase');
-            await supabase
-              .from('b2b_sessions')
-              .update({ status: 'Active', signed_name: signedName, updated_at: new Date() })
-              .eq('project_id', session.projectId);
+            const { error } = await supabase.rpc('accept_b2b_agreement', {
+              p_project_id: session.projectId,
+              p_password: session.password,
+              p_signed_name: signedName,
+            });
+            if (error) throw error;
           } catch (err) {
             console.error('Error syncing B2B agreement to Supabase:', err);
+            throw err;
           }
           set({
             b2bSession: {
