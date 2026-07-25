@@ -11,6 +11,21 @@ interface Props {
   onReviewSubmitted: () => void;
 }
 
+interface ReviewRow {
+  id: string;
+  product_id: string;
+  user_id: string;
+  user_name: string;
+  rating: number | string;
+  comment: string | null;
+  media_urls: {
+    images: string[];
+    videos: string[];
+    audios: string[];
+  } | null;
+  created_at: string | Date;
+}
+
 export default function ReviewSection({ product, onReviewSubmitted }: Props) {
   const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -45,8 +60,7 @@ export default function ReviewSection({ product, onReviewSubmitted }: Props) {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setReviews((data || []).map((r: any) => ({
+      setReviews((data || []).map((r: ReviewRow) => ({
         id: r.id,
         productId: r.product_id,
         userId: r.user_id,
