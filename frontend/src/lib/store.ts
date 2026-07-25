@@ -14,6 +14,7 @@ interface AppState {
   cart: CartItem[];
   addItem: (product: Product, quantity?: number) => void;
   addCartItem: (item: CartItem) => void;
+  addMultipleItems: (items: CartItem[]) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -77,6 +78,21 @@ export const useStore = create<AppState>()(
         } else {
           set({ cart: [...cart, item] });
         }
+      },
+      addMultipleItems: (items: CartItem[]) => {
+        const cart = get().cart;
+        const newCart = [...cart];
+
+        items.forEach((item) => {
+          const index = newCart.findIndex((i) => i.productId === item.productId);
+          if (index !== -1) {
+            newCart[index] = { ...newCart[index], quantity: newCart[index].quantity + item.quantity };
+          } else {
+            newCart.push(item);
+          }
+        });
+
+        set({ cart: newCart });
       },
       removeItem: (productId: string) => {
         set({ cart: get().cart.filter((item) => item.productId !== productId) });
