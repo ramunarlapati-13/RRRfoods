@@ -59,7 +59,7 @@ export default function AdminLocations() {
       const { data, error } = await supabase.from('locations').insert(loc).select('id').single();
       if (error) throw error;
       if (data) id = data.id;
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Error adding location to Supabase:', err);
       toast.error(err instanceof Error ? err.message : 'Failed to add to database, using local fallback.');
     }

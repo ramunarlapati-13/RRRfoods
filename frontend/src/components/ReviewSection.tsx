@@ -11,6 +11,21 @@ interface Props {
   onReviewSubmitted: () => void;
 }
 
+interface ReviewRow {
+  id: string;
+  product_id: string;
+  user_id: string;
+  user_name: string;
+  rating: number | string;
+  comment: string | null;
+  media_urls: {
+    images: string[];
+    videos: string[];
+    audios: string[];
+  } | null;
+  created_at: string | Date;
+}
+
 export default function ReviewSection({ product, onReviewSubmitted }: Props) {
   const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -45,8 +60,7 @@ export default function ReviewSection({ product, onReviewSubmitted }: Props) {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setReviews((data || []).map((r: any) => ({
+      setReviews((data || []).map((r: ReviewRow) => ({
         id: r.id,
         productId: r.product_id,
         userId: r.user_id,
@@ -64,9 +78,11 @@ export default function ReviewSection({ product, onReviewSubmitted }: Props) {
   };
 
   const uploadFileToStorage = async (file: File, folder: string): Promise<string> => {
+    if (!user) throw new Error('You must sign in to upload files.');
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-    const filePath = `${folder}/${fileName}`;
+    const filePath = `${user.uid}/${folder}/${fileName}`;
 
     // Upload to 'reviews' bucket
     const { error } = await supabase.storage
@@ -147,9 +163,9 @@ export default function ReviewSection({ product, onReviewSubmitted }: Props) {
 
       fetchReviews();
       onReviewSubmitted();
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error posting review:', err);
-      toast.error(err.message || 'Failed to submit review.');
+      toast.error(err instanceof Error ? err.message : 'Failed to submit review.');
     } finally {
       setUploading(false);
     }

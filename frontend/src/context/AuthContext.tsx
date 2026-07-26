@@ -36,28 +36,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // Fallback if profile row is not yet created by the DB trigger, or on DB query error
         const email = sbUser.email || '';
-        const role = (email === 'admin@rrrfoods.in' || email === 'ramu@rexplore.tech') ? 'admin' : 'customer';
         setUser({
           uid: sbUser.id,
           displayName: sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || email || '',
           email,
           phoneNumber: sbUser.phone || undefined,
           photoURL: sbUser.user_metadata?.avatar_url || undefined,
-          role,
+          role: 'customer',
           createdAt: new Date(sbUser.created_at),
         });
       }
     } catch (err) {
       console.error('Error fetching user profile from profiles table:', err);
       const email = sbUser.email || '';
-      const role = (email === 'admin@rrrfoods.in' || email === 'ramu@rexplore.tech') ? 'admin' : 'customer';
       setUser({
         uid: sbUser.id,
         displayName: sbUser.user_metadata?.full_name || email || '',
         email,
         phoneNumber: sbUser.phone || undefined,
         photoURL: sbUser.user_metadata?.avatar_url || undefined,
-        role,
+        role: 'customer',
         createdAt: new Date(sbUser.created_at),
       });
     }
