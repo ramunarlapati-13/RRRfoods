@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { User } from '@/lib/types';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface AuthContextValue {
   user: User | null;
@@ -14,8 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fetchAndSetUser = async (sbUser: any) => {
+  const fetchAndSetUser = async (sbUser: SupabaseUser) => {
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
