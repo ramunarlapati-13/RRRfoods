@@ -4,6 +4,7 @@ import { CartItem, Product } from './types';
 
 interface B2bSession {
   projectId: string;
+  password?: string;
   status: 'Pending' | 'Active';
   signedName?: string;
 }
@@ -13,6 +14,7 @@ interface AppState {
   cart: CartItem[];
   addItem: (product: Product, quantity?: number) => void;
   addCartItem: (item: CartItem) => void;
+  addMultipleItems: (items: CartItem[]) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -77,6 +79,21 @@ export const useStore = create<AppState>()(
           set({ cart: [...cart, item] });
         }
       },
+      addMultipleItems: (items: CartItem[]) => {
+        const cart = get().cart;
+        const newCart = [...cart];
+
+        items.forEach((item) => {
+          const index = newCart.findIndex((i) => i.productId === item.productId);
+          if (index !== -1) {
+            newCart[index] = { ...newCart[index], quantity: newCart[index].quantity + item.quantity };
+          } else {
+            newCart.push(item);
+          }
+        });
+
+        set({ cart: newCart });
+      },
       removeItem: (productId: string) => {
         set({ cart: get().cart.filter((item) => item.productId !== productId) });
       },
@@ -119,15 +136,18 @@ export const useStore = create<AppState>()(
       setB2bSession: (session) => set({ b2bSession: session }),
       acceptB2bAgreement: async (signedName) => {
         const session = get().b2bSession;
-        if (session) {
+        if (session && session.password) {
           try {
             const { supabase } = await import('./supabase');
-            await supabase
-              .from('b2b_sessions')
-              .update({ status: 'Active', signed_name: signedName, updated_at: new Date() })
-              .eq('project_id', session.projectId);
+            const { error } = await supabase.rpc('accept_b2b_agreement', {
+              p_project_id: session.projectId,
+              p_password: session.password,
+              p_signed_name: signedName,
+            });
+            if (error) throw error;
           } catch (err) {
             console.error('Error syncing B2B agreement to Supabase:', err);
+            throw err;
           }
           set({
             b2bSession: {

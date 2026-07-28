@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, HTMLMotionProps } from 'framer-motion';
 import Image from 'next/image';
 import { HeritageBoxItem } from '@/lib/types';
 import { PRODUCTS } from '@/lib/products';
@@ -26,7 +26,7 @@ const ELIGIBLE = PRODUCTS.filter((p) => p.category === 'pickles' || p.category =
 );
 
 export default function HeritageBoxSampler() {
-  const { addItem } = useCart();
+  const { addMultipleItems } = useCart();
   const [box, setBox] = useState<HeritageBoxItem[]>([]);
 
   // Restore from localStorage
@@ -84,9 +84,15 @@ export default function HeritageBoxSampler() {
       toast.error('Add at least 3 items to complete your Heritage Box.');
       return;
     }
-    box.forEach((item) =>
-      addItem({ productId: item.productId, name: item.name, imageUrl: item.imageUrl, sellingPrice: item.sellingPrice, quantity: 1, sku: '' })
-    );
+    const itemsToAdd = box.map((item) => ({
+      productId: item.productId,
+      name: item.name,
+      imageUrl: item.imageUrl,
+      sellingPrice: item.sellingPrice,
+      quantity: 1,
+      sku: '',
+    }));
+    addMultipleItems(itemsToAdd);
     setBox([]);
     toast.success('Heritage Box added to cart! 🎁');
   };
@@ -177,12 +183,15 @@ export default function HeritageBoxSampler() {
                     <AnimatePresence>
                       {box.map((item, idx) => (
                         <Draggable key={item.productId} draggableId={`box-${item.productId}`} index={idx}>
-                          {(drag) => (
-                            <motion.div
-                              ref={drag.innerRef}
-                              {...(drag.draggableProps as any)}
-                              {...(drag.dragHandleProps as any)}
-                              initial={{ opacity: 0, x: 20 }}
+                          {(drag) => {
+                            const { onDragStart, ...dragHandleProps } = drag.dragHandleProps || {};
+                            return (
+                              <motion.div
+                                ref={drag.innerRef}
+                                {...drag.draggableProps}
+                                {...dragHandleProps}
+                                onDragStart={onDragStart as unknown as HTMLMotionProps<"div">["onDragStart"]}
+                                initial={{ opacity: 0, x: 20 }}
                               animate={{ opacity: 1, x: 0 }}
                               exit={{ opacity: 0, x: -20 }}
                               className="flex items-center gap-3 p-2 rounded-xl"
@@ -202,8 +211,9 @@ export default function HeritageBoxSampler() {
                               >
                                 <FiTrash2 size={14} />
                               </button>
-                            </motion.div>
-                          )}
+                              </motion.div>
+                            );
+                          }}
                         </Draggable>
                       ))}
                     </AnimatePresence>
