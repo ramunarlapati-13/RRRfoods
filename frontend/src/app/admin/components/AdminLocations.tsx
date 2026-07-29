@@ -27,8 +27,7 @@ export default function AdminLocations() {
         const { data, error } = await supabase.from('locations').select('*').order('city', { ascending: true });
         if (error) throw error;
         if (data && data.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setLocations(data.map((l: any) => ({
+          setLocations(data.map((l: Location) => ({
             id: l.id,
             city: l.city,
             state: l.state,
