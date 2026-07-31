@@ -1,7 +1,22 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Order } from '@/lib/types';
+import { Order, CartItem, ShippingAddress } from '@/lib/types';
+
+interface SupabaseOrderRow {
+  id: string;
+  user_id: string;
+  items: CartItem[];
+  total_amount: number | string;
+  status: Order['status'];
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string;
+  shipping_address: ShippingAddress;
+  tracking_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-900/30 text-yellow-400',
@@ -24,8 +39,7 @@ export default function AdminOrders() {
           .select('*')
           .order('created_at', { ascending: false });
         if (error) throw error;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setOrders(data.map((o: any) => ({
+        setOrders(data.map((o: SupabaseOrderRow) => ({
           id: o.id,
           userId: o.user_id,
           items: o.items,
