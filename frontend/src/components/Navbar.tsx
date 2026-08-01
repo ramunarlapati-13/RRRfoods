@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -130,8 +131,13 @@ export default function Navbar() {
                   className="flex items-center gap-2 p-2 rounded-xl hover:bg-white/10 transition-colors"
                 >
                   {user.photoURL ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={user.photoURL} alt="avatar" className="w-7 h-7 rounded-full" />
+                    <Image
+                      src={user.photoURL}
+                      alt="avatar"
+                      width={28}
+                      height={28}
+                      className="w-7 h-7 rounded-full"
+                    />
                   ) : (
                     <FiUser size={20} style={{ color: 'var(--text-primary)' }} />
                   )}
