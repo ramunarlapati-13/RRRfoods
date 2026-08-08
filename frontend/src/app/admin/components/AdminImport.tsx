@@ -44,18 +44,22 @@ export default function AdminImport() {
     setImporting(true);
     try {
       const { supabase } = await import('@/lib/supabase');
-      const productsToInsert = rows.map((row) => ({
-        name: row.name || row.Name || '',
-        category: (row.category || row.Category || 'pickles').toLowerCase(),
-        actual_price: Number(row.actualPrice || row['Actual Price'] || 0),
-        selling_price: Number(row.sellingPrice || row['Selling Price'] || 0),
-        sku: `RKF${Math.floor(100000 + Math.random() * 900000)}`, // Generate 6-digit random SKU suffix to ensure uniqueness
-        in_stock: true,
-      }));
+      const batchData = [];
+      let count = 0;
+      for (const row of rows) {
+        batchData.push({
+          name: row.name || row.Name || '',
+          category: (row.category || row.Category || 'pickles').toLowerCase(),
+          actual_price: Number(row.actualPrice || row['Actual Price'] || 0),
+          selling_price: Number(row.sellingPrice || row['Selling Price'] || 0),
+          sku: `RKF${Math.floor(100000 + Math.random() * 900000)}`,
+          in_stock: true,
+        });
+        count++;
+      }
 
-      const { error } = await supabase.from('products').insert(productsToInsert);
+      const { error } = await supabase.from('products').insert(batchData);
       if (error) throw error;
-      const count = productsToInsert.length;
 
       toast.success(`${count} products imported successfully!`);
       setDone(true);
