@@ -17,8 +17,8 @@ create table if not exists public.profiles (
 alter table public.profiles enable row level security;
 
 -- Profiles Policies
-create policy "Allow public read access to profiles" on public.profiles
-  for select using (true);
+create policy "Allow users to read their own profile" on public.profiles
+  for select using (auth.uid() = id);
 
 create policy "Allow users to update their own profile" on public.profiles
   for update using (auth.uid() = id);
