@@ -108,7 +108,7 @@ export default function HomePage() {
           </h2>
           <p className="text-cream/70 mb-8 text-lg">
             Curate a custom gift box with your favourite pickles and sweets.
-            Perfect for gifting — mix and match 3–4 products and we'll pack them beautifully.
+            Perfect for gifting — mix and match 3–4 products and we&apos;ll pack them beautifully.
           </p>
           <Link id="home-heritage-cta" href="/sampler" className="btn-ochre text-base px-8 py-4 inline-block">
             Start Building →

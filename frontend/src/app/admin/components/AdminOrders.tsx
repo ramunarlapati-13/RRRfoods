@@ -80,7 +80,7 @@ export default function AdminOrders() {
       {orders.length === 0 ? (
         <div className="card p-12 text-center" style={{ color: 'var(--text-secondary)' }}>
           <p className="text-5xl mb-4">📦</p>
-          <p>No orders yet. They'll appear here once customers start ordering.</p>
+          <p>No orders yet. They&apos;ll appear here once customers start ordering.</p>
         </div>
       ) : (
         <div className="card overflow-hidden">
