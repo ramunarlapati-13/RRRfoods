@@ -8,6 +8,43 @@ describe('useStore', () => {
     useStore.setState({ cart: [] });
   });
 
+  describe('updateQuantity', () => {
+    it('should remove item when quantity is 0 or less', () => {
+      const item: CartItem = {
+        productId: 'prod-1',
+        name: 'Test Product',
+        imageUrl: 'test.jpg',
+        sellingPrice: 100,
+        quantity: 2,
+        sku: 'RKF1',
+      };
+
+      useStore.getState().addCartItem(item);
+      expect(useStore.getState().cart).toHaveLength(1);
+
+      useStore.getState().updateQuantity('prod-1', 0);
+      expect(useStore.getState().cart).toHaveLength(0);
+    });
+
+    it('should update item quantity correctly when greater than 0', () => {
+      const item: CartItem = {
+        productId: 'prod-1',
+        name: 'Test Product',
+        imageUrl: 'test.jpg',
+        sellingPrice: 100,
+        quantity: 2,
+        sku: 'RKF1',
+      };
+
+      useStore.getState().addCartItem(item);
+      useStore.getState().updateQuantity('prod-1', 5);
+
+      const cart = useStore.getState().cart;
+      expect(cart).toHaveLength(1);
+      expect(cart[0].quantity).toBe(5);
+    });
+  });
+
   describe('addCartItem', () => {
     it('should correctly update quantity when adding an existing item', () => {
       const item: CartItem = {
