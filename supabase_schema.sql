@@ -1,3 +1,5 @@
+create extension if not exists pgcrypto;
+
 -- ==========================================
 -- RRR Foods (ఆర్ఆర్ఆర్ ఫుడ్స్) Database Schema
 -- ==========================================
@@ -211,7 +213,7 @@ as $$
 begin
   return query
   select * from public.b2b_sessions
-  where project_id = p_project_id and password = p_password;
+  where project_id = p_project_id and password = crypt(p_password, password);
 end;
 $$;
 
@@ -224,7 +226,7 @@ as $$
 begin
   update public.b2b_sessions
   set status = 'Active', signed_name = p_signed_name, updated_at = now()
-  where project_id = p_project_id and password = p_password;
+  where project_id = p_project_id and password = crypt(p_password, password);
 end;
 $$;
 
@@ -314,7 +316,7 @@ on conflict (pincode) do nothing;
 
 -- Seed B2B Client session
 insert into public.b2b_sessions (project_id, password, status)
-values ('VSVBQUBB', 'b2b-secret-2026', 'Pending')
+values ('VSVBQUBB', crypt('b2b-secret-2026', gen_salt('bf')), 'Pending')
 on conflict (project_id) do nothing;
 
 -- Seed Project Execution Logs
