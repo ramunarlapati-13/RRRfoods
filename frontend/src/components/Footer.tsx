@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import { FiPhone, FiMail, FiInstagram, FiYoutube } from 'react-icons/fi';
-import { motion } from 'framer-motion';
 
 export default function Footer() {
   return (
@@ -29,17 +28,16 @@ export default function Footer() {
                 { Icon: FiInstagram, href: '#' },
                 { Icon: FiYoutube, href: 'https://m.youtube.com/@RRRFOODS-y4v' }
               ].map(({ Icon, href }, i) => (
-                <motion.a
+                <a
                   key={i}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.15, color: '#E5A93C' }}
-                  className="p-2.5 glass rounded-xl transition-colors"
+                  className="p-2.5 glass rounded-xl transition-all hover:scale-110 hover:text-ochre"
                   style={{ color: 'var(--text-secondary)' }}
                 >
                   <Icon size={18} />
-                </motion.a>
+                </a>
               ))}
             </div>
           </div>
