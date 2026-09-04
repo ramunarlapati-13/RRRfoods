@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/lib/store';
 import { FiLock, FiCheckCircle, FiFileText, FiList, FiAlertTriangle, FiArrowRight } from 'react-icons/fi';
