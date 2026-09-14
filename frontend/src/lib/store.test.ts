@@ -108,6 +108,93 @@ describe('useStore', () => {
       expect(cart[1].quantity).toBe(2);
     });
   });
+
+  describe('addMultipleItems', () => {
+    it('should do nothing when given an empty input array', () => {
+      const existingItem: CartItem = {
+        productId: 'prod-1',
+        name: 'Test Product 1',
+        imageUrl: 'test1.jpg',
+        sellingPrice: 100,
+        quantity: 2,
+        sku: 'RKF1',
+      };
+      useStore.getState().addCartItem(existingItem);
+
+      useStore.getState().addMultipleItems([]);
+
+      const cart = useStore.getState().cart;
+      expect(cart).toHaveLength(1);
+      expect(cart[0].productId).toBe('prod-1');
+      expect(cart[0].quantity).toBe(2);
+    });
+
+    it('should handle duplicate product IDs within the input array', () => {
+      const itemA: CartItem = {
+        productId: 'prod-1',
+        name: 'Test Product 1',
+        imageUrl: 'test1.jpg',
+        sellingPrice: 100,
+        quantity: 2,
+        sku: 'RKF1',
+      };
+      const itemA2: CartItem = {
+        productId: 'prod-1',
+        name: 'Test Product 1',
+        imageUrl: 'test1.jpg',
+        sellingPrice: 100,
+        quantity: 3,
+        sku: 'RKF1',
+      };
+
+      useStore.getState().addMultipleItems([itemA, itemA2]);
+
+      const cart = useStore.getState().cart;
+      expect(cart).toHaveLength(1);
+      expect(cart[0].productId).toBe('prod-1');
+      expect(cart[0].quantity).toBe(5);
+    });
+
+    it('should correctly merge new items with existing cart items', () => {
+      const existingItem: CartItem = {
+        productId: 'prod-1',
+        name: 'Test Product 1',
+        imageUrl: 'test1.jpg',
+        sellingPrice: 100,
+        quantity: 1,
+        sku: 'RKF1',
+      };
+      useStore.getState().addCartItem(existingItem);
+
+      const itemsToAdd: CartItem[] = [
+        {
+          productId: 'prod-1',
+          name: 'Test Product 1',
+          imageUrl: 'test1.jpg',
+          sellingPrice: 100,
+          quantity: 4,
+          sku: 'RKF1',
+        },
+        {
+          productId: 'prod-2',
+          name: 'Test Product 2',
+          imageUrl: 'test2.jpg',
+          sellingPrice: 200,
+          quantity: 2,
+          sku: 'RKF2',
+        },
+      ];
+
+      useStore.getState().addMultipleItems(itemsToAdd);
+
+      const cart = useStore.getState().cart;
+      expect(cart).toHaveLength(2);
+      expect(cart[0].productId).toBe('prod-1');
+      expect(cart[0].quantity).toBe(5);
+      expect(cart[1].productId).toBe('prod-2');
+      expect(cart[1].quantity).toBe(2);
+    });
+  });
 });
 
 describe('cartTotal calculation', () => {
