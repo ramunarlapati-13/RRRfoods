@@ -72,23 +72,29 @@ export const useStore = create<AppState>()(
         }
       },
       addMultipleItems: (items: CartItem[]) => {
+        if (!items || items.length === 0) return;
+
         const cart = get().cart;
-        const itemMap = new Map<string, CartItem>();
+        const newCart = cart.slice();
+        const indexMap = new Map<string, number>();
 
-        cart.forEach((item) => {
-          itemMap.set(item.productId, item);
-        });
+        for (let i = 0; i < newCart.length; i++) {
+          indexMap.set(newCart[i].productId, i);
+        }
 
-        items.forEach((item) => {
-          const existingItem = itemMap.get(item.productId);
-          if (existingItem) {
-            itemMap.set(item.productId, { ...existingItem, quantity: existingItem.quantity + item.quantity });
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const idx = indexMap.get(item.productId);
+          if (idx !== undefined) {
+            const existing = newCart[idx];
+            newCart[idx] = { ...existing, quantity: existing.quantity + item.quantity };
           } else {
-            itemMap.set(item.productId, item);
+            indexMap.set(item.productId, newCart.length);
+            newCart.push(item);
           }
-        });
+        }
 
-        set({ cart: Array.from(itemMap.values()) });
+        set({ cart: newCart });
       },
       removeItem: (productId: string) => {
         set({ cart: get().cart.filter((item) => item.productId !== productId) });
