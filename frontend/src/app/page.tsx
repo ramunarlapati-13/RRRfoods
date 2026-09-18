@@ -29,12 +29,14 @@ export default function HomePage() {
 
   const featured = products.filter((p) => p.featured);
 
-  const counts = {
-    all: products.length,
-    pickles: products.filter((p) => p.category === 'pickles').length,
-    sweets: products.filter((p) => p.category === 'sweets').length,
-    meals: 0,
-  };
+  const counts = products.reduce(
+    (acc, p) => {
+      if (p.category === 'pickles') acc.pickles++;
+      else if (p.category === 'sweets') acc.sweets++;
+      return acc;
+    },
+    { all: products.length, pickles: 0, sweets: 0, meals: 0 }
+  );
 
   return (
     <>
