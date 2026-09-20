@@ -316,7 +316,7 @@ on conflict (pincode) do nothing;
 
 -- Seed B2B Client session
 insert into public.b2b_sessions (project_id, password, status)
-values ('VSVBQUBB', crypt('b2b-secret-2026', gen_salt('bf')), 'Pending')
+values ('VSVBQUBB', crypt(coalesce(nullif(current_setting('app.settings.b2b_initial_password', true), ''), 'CHANGE_ME_IN_PRODUCTION'), gen_salt('bf')), 'Pending')
 on conflict (project_id) do nothing;
 
 -- Seed Project Execution Logs
