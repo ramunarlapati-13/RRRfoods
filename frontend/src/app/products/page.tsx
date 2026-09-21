@@ -5,6 +5,7 @@ import ProductCard from '@/components/ProductCard';
 import CategoryFilter from '@/components/CategoryFilter';
 import { PRODUCTS, fetchProductsFromDb } from '@/lib/products';
 import { Category, DietFilter, Product } from '@/lib/types';
+import { calculateCategoryCounts } from './calculateCategoryCounts';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import Link from 'next/link';
@@ -51,12 +52,7 @@ function ProductsGrid() {
       })
     : [];
 
-  const counts = {
-    all: products.length,
-    pickles: products.filter((p) => p.category === 'pickles').length,
-    sweets: products.filter((p) => p.category === 'sweets').length,
-    meals: 0,
-  };
+  const counts = calculateCategoryCounts(products);
 
   return (
     <div>
