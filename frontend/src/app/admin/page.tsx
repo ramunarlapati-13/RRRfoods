@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { FiPackage, FiShoppingBag, FiUsers, FiMapPin, FiUpload, FiLogOut } from 'react-icons/fi';
+import { FiPackage, FiShoppingBag, FiMapPin, FiUpload, FiLogOut } from 'react-icons/fi';
 import { supabase } from '@/lib/supabase';
 import AdminProducts from './components/AdminProducts';
 import AdminOrders from './components/AdminOrders';
